@@ -28,9 +28,9 @@ set wildmenu      " turn on enhanced auto complete
 
 
 " Quickly edit/reload the vimrc file
-nmap <silent> <leader>ev :e $MYVIMRC<CR>
-nmap <silent> <leader>sv :so $MYVIMRC<CR>
+nmap <silent> ,ev :e $MYVIMRC<CR>
+nmap <silent> ,sv :so $MYVIMRC<CR>
 
 " open the current file in marked application
-nmap <silent> <leader>m  :!open -a Marked.app '%'<cr><cr>
+nmap <silent> ,md  :!open -a Marked.app '%'<cr><cr>
 
