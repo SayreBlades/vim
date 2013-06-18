@@ -7,3 +7,9 @@
 [submodule "bundle/scala"]
 	path = bundle/scala
 	url = https://github.com/derekwyatt/vim-scala.git
+[submodule "bundle/fugitive"]
+	path = bundle/fugitive
+	url = https://github.com/tpope/vim-fugitive.git
+[submodule "bundle/tcomment"]
+	path = bundle/tcomment
+	url = https://github.com/tomtom/tcomment_vim.git
