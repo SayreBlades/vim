@@ -26,6 +26,9 @@ set listchars=tab:\|\ ,trail:-
 set title         " change the terminal's title
 set wildmenu      " turn on enhanced auto complete
 
+" Set up autocommands
+" read .json files as javascript
+autocmd BufNewFile,BufRead *.json set ft=javascript
 
 " Quickly edit/reload the vimrc file
 nmap <silent> ,ev :e $MYVIMRC<CR>
