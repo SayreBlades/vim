@@ -25,6 +25,14 @@ set listchars=tab:\|\ ,trail:-
                   " only set the tab unprintable character
 set title         " change the terminal's title
 set wildmenu      " turn on enhanced auto complete
+set hidden        " put modified buffers in background
+
+" Tabstops are 4 spaces
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set expandtab
+set autoindent
 
 " Set up autocommands
 " read .json files as javascript
@@ -36,4 +44,22 @@ nmap <silent> ,sv :so $MYVIMRC<CR>
 
 " open the current file in marked application
 nmap <silent> ,md  :!open -a Marked.app '%'<cr><cr>
+
+" toggle hls
+nmap <silent> ,n :set hls!<CR>:set hls?<CR>
+
+" toggle paste
+nmap <silent> ,p :set paste!<CR>:set paste?<CR>
+
+
+" set up some auto close mappings
+inoremap ( ()<Esc>i
+inoremap { {}<Esc>i
+
+" #####################################################################
+" javascript plugin
+" #####################################################################
+let g:html_indent_inctags = "body,head,tbody"
+let g:html_indent_script1 = "inc"
+let g:html_indent_style1 = "inc"
 
