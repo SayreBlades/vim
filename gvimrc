@@ -1,6 +1,6 @@
 " set the gvim look and feel
-set transparency=5
-set background=dark
+set transparency=1
+set background=light
 colorscheme solarized
 
 
