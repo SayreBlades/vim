@@ -1,7 +1,3 @@
-" no backwards vi behavior 
-set nocompatible
-
-" set up pathogen
 call pathogen#infect()
 
 " Get that filetype stuff happening
@@ -13,7 +9,19 @@ filetype indent on
 " Turn on colors
 " #####################################################################
 syntax on
-highlight LineNr ctermfg=444444
+" highlight LineNr ctermfg=444444
+colorscheme solarized
+
+" #####################################################################
+" make better tmux cursor shapes for insert mode
+" #####################################################################
+if exists('$TMUX')
+  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+else
+  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+endif
 
 " #####################################################################
 " set behaviours of vim
@@ -24,6 +32,7 @@ set cursorline    " highlights the current line
 set hlsearch      " highlight search terms
 set incsearch     " show search matches as you type
 set number        " always show line numbers
+set relativenumber " set the relative number
 set ruler         " show line/column number of cursor at bottom
 set laststatus=2  " always show the status line
 set backspace=indent,eol,start
@@ -39,6 +48,7 @@ set hidden        " put modified buffers in background
 set noswf         " turn off swap files for now, it gets annoying when continuous compilation compiles swap files
 set nowrap        " turn off the line wrapping
 set history=100   " increase command line history from 20
+set background=light " default background to dark
 
 " Dealing with tabs
 set tabstop=4     " Number of spaces that a <Tab> in the file counts for.
@@ -50,49 +60,45 @@ set autoindent    " new lines are indented the same as the previous line
 
 
 " #####################################################################
-" set up autocommands
-" #####################################################################
-augroup filetype_vim
-    autocmd!
-    autocmd FileType vim setlocal foldmethod=marker
-augroup END
-
-
-" #####################################################################
 " set up abbreviations
 " #####################################################################
 iabbrev adn and
 iabbrev waht what
 iabbrev tehn then
+iabbrev {{ {}O<bs>
 
 " #####################################################################
 " Set up key mappings
 " #####################################################################
 let mapleader=','
-let localleader=',,'
+let maplocalleader=',,'
 
-noremap <buffer> <localleader>n :echo "lln"<cr>:sleep 500m<cr>:echo "done"<cr>
-
-" map jk to escape
-" inoremap <s-space> <esc>`^
-" cnoremap <s-space> <esc>`^
-" nnoremap <s-space> <nop>
-" vnoremap <s-space> <esc>`^
+" remap escape key to do nothing
 " noremap <esc> <nop>
-" noremap <Up> <nop>
-" noremap <Down> <nop>
-" noremap <Left> <nop>
-" noremap <Right> <nop>
+" inoremap <esc> <nop>
+" vnoremap <esc> <nop>
+" nnoremap <esc> <nop>
+" nnoremap <c-c> <nop>
+
+" create uppercase map for insert mode
+inoremap <c-u> <esc>gUiwea
+" nnoremap <c-u> mmgUiw`m
+
+" set up mapping to trigger autocomplete
+inoremap <c-o> <c-p><c-n>
+
+" set up mapping to vertical split with the last buffer
+noremap <leader>vs :vsp<cr><c-^><c-w>p
+noremap <leader>sp :rightbelow vsplit #<cr>
+
+" set up a quick easy motion map
+" nnoremap <leader>f H:call EasyMotion#F(0, 0)<cr>
 
 " kill the window
 nnoremap <silent> K :bd<cr>
 
 " set up a command line mappint %% to current file directory
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
-" map <leader>ew :e %%
-" map <leader>es :sp %%
-" map <leader>ev :vsp %%
-" map <leader>et :tabe %%
 
 " add bettern pane navigation
 nnoremap <C-h> <C-w>h
@@ -100,24 +106,42 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
+" toggle bacground between dark and light
+nnoremap <leader>b :call ToggleBackground()<cr>
+
+function! ToggleBackground()
+    if(&background==#"dark")
+        set background=light
+    else
+        set background=dark
+    endif
+endfunction
+
+" ctag mapping
+nnoremap <leader>ct :!ctags -R<cr><cr>
+
 " create intermediate directories
-nnoremap <leader>mk :!mkdir -p %:h<CR>
+nnoremap <leader>mk :!mkdir -p %:h<cr><cr>:echom "created path: " . expand('%:h')<cr>
 
 " Quickly edit/source the vimrc file
 nnoremap <leader>ec :e $MYVIMRC<CR>
-nnoremap <leader>so :w<CR>:so %<CR>:echom "saved and sourced"<CR>
+nnoremap <silent> <leader>so :w<CR>:so %<CR>:echom "saved and sourced: " . expand('%:p')<CR>
 
 " quickly save file
-nnoremap <leader>sv :w<CR>:echom "saved"<cr>
+noremap <leader>sv :w<CR>:echom "saved"<cr>
 
 " open the current file in marked application
-nnoremap <leader>md  :!open -a Marked.app '%'<cr><cr>
+nnoremap <leader>md :!open -a Marked.app '%'<cr><cr>
+
+" open the current file in chrome
+nnoremap <leader>ch :!chrome '%'<cr><cr>
 
 " cursorline doesnt work very well in tmux; set up toggle
 nnoremap <leader>cl :set cursorline!<CR>:set cursorline?<CR>
 
 " toggle number
 nnoremap <leader>n :set number!<CR>:set number?<CR>
+nnoremap <leader>r :set relativenumber!<CR>:set relativenumber?<CR>
 
 " toggle hls
 " nnoremap <leader>n :set hls!<CR>:set hls?<CR>
@@ -133,7 +157,14 @@ nnoremap <leader>p :set paste!<CR>:set paste?<CR>
 nnoremap <leader>w :set wrap!<CR>:set wrap?<CR>
 
 " map a scala file format
-nnoremap <leader>fs mmgggqG`m
+nnoremap <leader>F mmgggqG`m
+
+" set up some nerd tree bindings
+nnoremap <leader>tt :NERDTreeToggle<cr>
+nnoremap <leader>to :NERDTree<cr>
+nnoremap <leader>tc :NERDTreeClose<cr>
+" nnoremap <leader>tf :NERDTreeFind<cr><c-w>p
+nnoremap <leader>tf :NERDTreeFind<cr>
 
 " Maps Alt-[h,j,k,l] to resizing a window split
 if bufwinnr(1)
@@ -159,8 +190,22 @@ endif
 " let g:netrw_winsize=20
 
 " #####################################################################
-" Set up autocommands
+" set up autocommands
 " #####################################################################
+" set the folding strategy for vim files
+" Vimscript file settings           -------------{{{
+augroup filetype_vim
+    autocmd!
+    autocmd FileType vim setlocal foldmethod=marker
+augroup END
+" }}}
+
+" test html autocommand
+augroup filetype_html
+    autocmd!
+    autocmd FileType html nnoremap <buffer> <localleader>g Vatzf
+augroup END
+
 " read .json files as javascript
 autocmd BufNewFile,BufRead *.json set ft=javascript
 
@@ -202,3 +247,12 @@ function! s:VSetSearch()
     let @/ = '\V' . substitute(escape(@s, '/\'), '\n', '\\n', 'g') 
     let @s = temp
 endfunction
+
+
+" #####################################################################
+" NERDTree
+" #####################################################################
+let NERDTreeWinPos="left"
+let NERDTreeWinSize=35
+let NERDTreeIgnore=['target[[dir]]']
+let NERDTreeShowHidden=0
