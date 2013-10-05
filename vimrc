@@ -92,7 +92,8 @@ noremap <leader>vs :vsp<cr><c-^><c-w>p
 noremap <leader>sp :rightbelow vsplit #<cr>
 
 " set up a quick easy motion map
-" nnoremap <leader>f H:call EasyMotion#F(0, 0)<cr>
+nnoremap <leader>ef H:call EasyMotion#F(0, 0)<cr>
+nnoremap <leader>ew H:call EasyMotion#WB(0, 0)<cr>
 
 " kill the window
 nnoremap <silent> K :bd<cr>
@@ -140,8 +141,23 @@ nnoremap <leader>ch :!chrome '%'<cr><cr>
 nnoremap <leader>cl :set cursorline!<CR>:set cursorline?<CR>
 
 " toggle number
-nnoremap <leader>n :set number!<CR>:set number?<CR>
-nnoremap <leader>r :set relativenumber!<CR>:set relativenumber?<CR>
+nnoremap <leader>n :call <SID>SetNumber()<CR>
+vnoremap <leader>n :<c-u>call <SID>SetNumber()<CR>
+function! s:SetNumber()
+    if !&number && !&relativenumber
+        let &number = 1
+        let &relativenumber = 0
+        echo "number"
+    elseif &number && !&relativenumber
+        let &number = 0
+        let &relativenumber = 1
+        echo "relativenumber"
+    else
+        let &number = 0
+        let &relativenumber = 0
+        echo "nonumber"
+    endif
+endfunction
 
 " toggle hls
 " nnoremap <leader>n :set hls!<CR>:set hls?<CR>
@@ -165,6 +181,9 @@ nnoremap <leader>to :NERDTree<cr>
 nnoremap <leader>tc :NERDTreeClose<cr>
 " nnoremap <leader>tf :NERDTreeFind<cr><c-w>p
 nnoremap <leader>tf :NERDTreeFind<cr>
+
+" set up a line text object
+vnoremap il :<c-u>silent! normal! ^v$g_<cr>
 
 " Maps Alt-[h,j,k,l] to resizing a window split
 if bufwinnr(1)
